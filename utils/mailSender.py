@@ -10,13 +10,14 @@ def sendMail(**kwargs):
     try:
         print(kwargs['email'], 'and', kwargs['message'])
         
-        context = ssl.create_default_context()
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()    
+        server.login(os.getenv('SENDER_MAIL'), os.getenv('SENDER_PASSWORD'))
+        server.sendmail(os.getenv('SENDER_MAIL'), kwargs['email'], kwargs['message'])
+        
+        return {"message":"mail send successfully", "status code": 200} 
 
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
-        # server.starttls()
-            smtp.login('testdeveloper1599@gmail.com', 'test@test1234567')
-            smtp.sendmail('testdeveloper1599@gmail.com', kwargs['email'], kwargs['message'])
-            return {"message":"mail send successfully", "status code": 200} 
+
 
     except Exception as e:
         print(e)

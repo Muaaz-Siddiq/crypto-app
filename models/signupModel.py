@@ -12,7 +12,6 @@ class SignupModel(BaseModel):
     def check_phoneNumber_format(cls, v):
         regExs = r"^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$"
         if not re.fullmatch(regExs, v):
-            print('in here')
             raise ValueError("Invalid Phone Number")
         return v
 

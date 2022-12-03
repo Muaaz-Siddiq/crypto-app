@@ -2,11 +2,16 @@ from flask import Blueprint, request, jsonify
 from config import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from bson import json_util
+from models.loginModel import *
+from utils.pydanticError import *
+from flask_pydantic import validate
 
 login = Blueprint("login", __name__)
 
 
 @login.route('/', methods=['GET','POST'])
+@custom_error
+@validate(body=loginModel)
 def login_view():
     try:
         if request.method == 'POST':
@@ -26,11 +31,11 @@ def login_view():
                     'email':user['email'],
                     'access':access_token,
                     'refresh':refresh_token
-                }, "status code" : 200
+                }
             })
         else:
-            return jsonify({"message":'Wrong Credentials', "status code":200})
+            return jsonify({"message":'Wrong Credentials'}), 401
 
     except Exception as e:
         print(e)
-        return jsonify({"message":"Something Went Wrong", "status code":500})
+        return jsonify({"message":"Something Went Wrong"}), 500
